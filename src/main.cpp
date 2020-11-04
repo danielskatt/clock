@@ -49,13 +49,7 @@ void loop()
   u_long time_millis = millis();
   // set time interval for last digit
   u_int time = 6000;
-  char input;
-  /* if(Serial.available())
-  {
-    input = Serial.read();
-  }
-  Serial.println(input);
-  */
+
   if(time * counter <= time_millis)
   {
     // counter last digit
