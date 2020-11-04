@@ -1,5 +1,10 @@
 #include <Arduino.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <BlynkSimpleEsp32.h>
 
+#define BLYNK_PRINT Serial
+// pin configuration
 #define STEPPER_PIN_1 21
 #define STEPPER_PIN_2 17
 #define STEPPER_PIN_3 16
@@ -12,43 +17,69 @@
 #define STEPPER_PIN_10 33
 #define STEPPER_PIN_11 27
 #define STEPPER_PIN_12 12
+
 #define DELAY_BETWEEN_STEPS 5
+
+char auth[] = "nYCkxW6tE1H93gSjPOC8JPSbP_GKDdfp";
+// WiFi credentials.
+// Set password to "" for open networks.
+char ssid[] = "YA-OPEN";
+char pass[] = "utbildning2015";
+
 typedef struct {
   int pin_1;
   int pin_2;
   int pin_3;
   int pin_4;
-}stepper;
+} stepper;
+
 u_int counter = 1;
 // only for testing
 u_int first_digit = 0, middle_digit = 0, last_digit = 0;
+
+stepper motor_1 = {STEPPER_PIN_1, STEPPER_PIN_2, STEPPER_PIN_3, STEPPER_PIN_4};
+stepper motor_2 = {STEPPER_PIN_5, STEPPER_PIN_6, STEPPER_PIN_7, STEPPER_PIN_8};
+stepper motor_3 = {STEPPER_PIN_9, STEPPER_PIN_10, STEPPER_PIN_11, STEPPER_PIN_12};
+
 void step_clockwise(int milli_seconds, int counter, stepper pin);
 void step_counter_clockwise(int milli_seconds, int counter, stepper pin);
 
 void setup()
 {
-Serial.begin(9600);
-pinMode(STEPPER_PIN_1, OUTPUT);
-pinMode(STEPPER_PIN_2, OUTPUT);
-pinMode(STEPPER_PIN_3, OUTPUT);
-pinMode(STEPPER_PIN_4, OUTPUT);
-pinMode(STEPPER_PIN_5, OUTPUT);
-pinMode(STEPPER_PIN_6, OUTPUT);
-pinMode(STEPPER_PIN_7, OUTPUT);
-pinMode(STEPPER_PIN_8, OUTPUT);
-pinMode(STEPPER_PIN_9, OUTPUT);
-pinMode(STEPPER_PIN_10, OUTPUT);
-pinMode(STEPPER_PIN_11, OUTPUT);
-pinMode(STEPPER_PIN_12, OUTPUT);
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+  pinMode(STEPPER_PIN_1, OUTPUT);
+  pinMode(STEPPER_PIN_2, OUTPUT);
+  pinMode(STEPPER_PIN_3, OUTPUT);
+  pinMode(STEPPER_PIN_4, OUTPUT);
+  pinMode(STEPPER_PIN_5, OUTPUT);
+  pinMode(STEPPER_PIN_6, OUTPUT);
+  pinMode(STEPPER_PIN_7, OUTPUT);
+  pinMode(STEPPER_PIN_8, OUTPUT);
+  pinMode(STEPPER_PIN_9, OUTPUT);
+  pinMode(STEPPER_PIN_10, OUTPUT);
+  pinMode(STEPPER_PIN_11, OUTPUT);
+  pinMode(STEPPER_PIN_12, OUTPUT);
+}
+BLYNK_WRITE(V1)
+{
+  step_clockwise(DELAY_BETWEEN_STEPS, 1, motor_1);
+}
+BLYNK_WRITE(V2)
+{
+  step_counter_clockwise(DELAY_BETWEEN_STEPS, 1, motor_2);
+}
+BLYNK_WRITE(V3)
+{
+  step_counter_clockwise(DELAY_BETWEEN_STEPS, 1, motor_3);
 }
 void loop()
 {
-  stepper motor_1 = {STEPPER_PIN_1, STEPPER_PIN_2, STEPPER_PIN_3, STEPPER_PIN_4};
-  stepper motor_2 = {STEPPER_PIN_5, STEPPER_PIN_6, STEPPER_PIN_7, STEPPER_PIN_8};
-  stepper motor_3 = {STEPPER_PIN_9, STEPPER_PIN_10, STEPPER_PIN_11, STEPPER_PIN_12};
   u_long time_millis = millis();
   // set time interval for last digit
   u_int time = 6000;
+
+  Blynk.run();
 
   if(time * counter <= time_millis)
   {
