@@ -28,7 +28,6 @@ typedef struct {
    int pin_4;
 } step_motor;
 
-
 /*
   ***** Function rotate step motor clockwise *****
   Input = A struck with I/O pin configuration
